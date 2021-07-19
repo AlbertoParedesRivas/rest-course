@@ -1,11 +1,17 @@
-from sqlalchemy.orm import defaultload
+from enum import unique
+from re import T
+from flask.helpers import url_for
 from db import db
+from requests import Response
+from flask import request, url_for
+from libs.mailgun import Mailgun
 
 class UserModel(db.Model):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), nullable=False, unique=True)
+    email = db.Column(db.String(80), nullable=False, unique=True)
     password = db.Column(db.String(80), nullable=False)
     activated = db.Column(db.Boolean, default=False)
 
@@ -14,8 +20,19 @@ class UserModel(db.Model):
         return cls.query.filter_by(username=username).first()
 
     @classmethod
+    def find_by_email(cls, email: str) -> "UserModel":
+        return cls.query.filter_by(email=email).first()
+
+    @classmethod
     def find_by_id(cls, _id: int) -> "UserModel":
         return cls.query.filter_by(id=_id).first()
+
+    def send_confirmation_email(self) -> Response:
+        link = request.url_root[:-1] + url_for("userconfirm", user_id=self.id)
+        subject = "Registration confirmation"
+        text = f"Please click the link to confirm your registration: {link}"
+        html = f'<p>Please click the link to confirm your registration: <a href="{link}">{link}</a></p>'
+        return Mailgun.send_email([self.email], subject, text, html)
 
     def save_to_db(self) -> None:
         db.session.add(self)
