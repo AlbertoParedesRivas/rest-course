@@ -2,7 +2,7 @@ from db import db
 from requests import Response
 from flask import request, url_for
 from libs.mailgun import Mailgun
-from confirmation import ConfirmationModel
+from models.confirmation import ConfirmationModel
 
 class UserModel(db.Model):
     __tablename__ = "users"
@@ -12,7 +12,7 @@ class UserModel(db.Model):
     email = db.Column(db.String(80), nullable=False, unique=True)
     password = db.Column(db.String(80), nullable=False)
 
-    confirmation = db.relationship("ConfirmationModel", lazy="dynamic", cascade="all, delete-orphan")
+    confirmation = db.relationship("ConfirmationModel", lazy="dynamic", overlaps="user", cascade="all, delete-orphan")
 
     @property
     def most_recent_confirmation(self) -> "ConfirmationModel":
