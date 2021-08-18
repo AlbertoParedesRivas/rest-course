@@ -5,7 +5,7 @@ class FileStorageField(fields.Field):
     default_error_message = {
         "invalid": "Not a valid image."
     }
-    def _deserialize(self, value, attr, data) -> FileStorage:
+    def _deserialize(self, value, attr, data, **kwargs) -> FileStorage:
         if value is None:
             return None
         if not isinstance(value, FileStorage):
