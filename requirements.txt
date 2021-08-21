@@ -8,3 +8,4 @@ marshmallow-sqlalchemy
 requests
 python-dotenv
 flask-uploads
+Flask-OAuthlib

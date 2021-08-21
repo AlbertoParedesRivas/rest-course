@@ -31,7 +31,7 @@ class Mailgun:
                 "html": html
             }
         )
-        if response.status_code is not 200:
+        if response.status_code != 200:
             raise MailgunException(gettext("mailgun_error_send_email"))
         
         return response
