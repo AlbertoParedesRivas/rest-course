@@ -4,13 +4,24 @@ import os
 from db import db
 from typing import List
 
+class ItemsInOrder(db.Model):
+    __tablemodel__ = "items_in_order"
+
+    id = db.Column(db.Integer, primary_key=True)
+    item_id = db.Column(db.Integer, db.ForeignKey("items.id"))
+    order_id = db.Column(db.Integer, db.ForeignKey("orders.id"))
+    quantity = db.Column(db.Integer, primary_key=True)
+
+    item = db.relationship("ItemModel")
+    order = db.relationship("OrderModel", back_populates="items")
+
 class OrderModel(db.Model):
     __tablename__ = "orders"
 
     id = db.Column(db.Integer, primary_key = True)
     status = db.Column(db.String(20), nullable = False)
 
-    items = db.relationship("ItemModel", lazy="dynamic")
+    items = db.relationship("ItemsInOrder", back_populates = "order")
 
     @classmethod
     def find_all(cls):
