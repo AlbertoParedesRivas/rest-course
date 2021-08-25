@@ -12,7 +12,7 @@ class ItemsInOrder(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     item_id = db.Column(db.Integer, db.ForeignKey("items.id"))
     order_id = db.Column(db.Integer, db.ForeignKey("orders.id"))
-    quantity = db.Column(db.Integer, primary_key=True)
+    quantity = db.Column(db.Integer)
 
     item = db.relationship("ItemModel")
     order = db.relationship("OrderModel", back_populates="items")
